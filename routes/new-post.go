@@ -7,13 +7,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func AddPublication(c *fiber.Ctx) error {
+func NewPost(c *fiber.Ctx) error {
 	// Gets the parameters author, message and ip
-	author := c.Query("author")
+	author := c.FormValue("author")
 	if author == "" {
 		author = "Anonymous"
 	}
-	message := c.Query("message")
+	message := c.FormValue("message")
 	if message == "" {
 		err := c.SendString("message empty")
 		if err != nil {
@@ -25,5 +25,9 @@ func AddPublication(c *fiber.Ctx) error {
 	// Calls the AddPublication function to upload parameters to the database
 	status := utils.AddPublication(author, message, ip)
 	fmt.Println(status)
+	err := c.SendFile("views/post-created.html")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	return nil
 }

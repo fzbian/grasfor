@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grasfor - New Post</title>
+</head>
+<body>
+    <h1>Grasfor</h1>
+    <nav>
+        <a href="/">Home</a> |
+        <a href="new-post">New Post</a> |
+    </nav>
+
+    <form action="/api/new-post" method="POST">
+        <p>Name&nbsp;</p>
+        <textarea id="author" name="author" rows="1" cols="25"></textarea>
+        <p>Message&nbsp;</p>
+        <textarea id="message" name="message" rows="4" cols="50"></textarea>
+        <p>&nbsp;</p>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
