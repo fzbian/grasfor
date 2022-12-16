@@ -11,11 +11,11 @@ import (
 )
 
 type Posts struct {
-	id      int    `json:"id"`
-	author  string `json:"author"`
-	message string `json:"message"`
-	ip      string `json:"ip"`
-	date    string `json:"date"`
+	Id      int    `json:"id"`
+	Author  string `json:"author"`
+	Message string `json:"message"`
+	Ip      string `json:"ip"`
+	Date    string `json:"date"`
 }
 
 func GetPosts(c *fiber.Ctx) error {
@@ -31,26 +31,36 @@ func GetPosts(c *fiber.Ctx) error {
 		}
 	}(rows)
 
+	bks := make([]*Posts, 0)
 	for rows.Next() {
 		bk := new(Posts)
-		err := rows.Scan(&bk.id, &bk.author, &bk.message, &bk.ip, &bk.date)
+		err := rows.Scan(&bk.Id, &bk.Author, &bk.Message, &bk.Ip, &bk.Date)
 		if err != nil {
 			log.Panic(err.Error())
 			return nil
 		}
-		fmt.Println(bk.id, bk.author, bk.message, bk.ip, bk.date)
-		post := Posts{
-			id:      bk.id,
-			author:  bk.author,
-			message: bk.message,
-			ip:      bk.ip,
-			date:    bk.date,
+		bks = append(bks, bk)
+	}
+	if err = rows.Err(); err != nil {
+		log.Panic(err.Error())
+		return nil
+	}
+
+	postsToShow := make([]Posts, len(bks))
+	for i, bk := range bks {
+		postsToShow[i] = Posts{
+			Id:      bk.Id,
+			Author:  bk.Author,
+			Message: bk.Message,
+			Ip:      bk.Ip,
+			Date:    bk.Date,
 		}
-		marshal, err := json.Marshal(post)
-		if err != nil {
-			return err
-		}
-		return c.JSON(marshal)
+	}
+	b, _ := json.MarshalIndent(postsToShow, "", "\t")
+	fmt.Printf("\n\n%v\n\n", string(b))
+	err = c.JSON(postsToShow)
+	if err != nil {
+		return err
 	}
 	return nil
 }
